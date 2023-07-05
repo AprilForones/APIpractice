@@ -1,4 +1,7 @@
+using APIpractice;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<BooksDbContext>(options =>
+    options.UseMySQL("Server=localhost,3306;Database=booksdb;Uid=root;Pwd=root;"));
 
 var app = builder.Build();
 
@@ -37,56 +43,45 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
-List<Book> books = new List<Book>();
-books.Add(new Book
-{
-    Description = "Fantasy",
-    Name = "Cinderella",
-    ID = 1
-});
-books.Add(new Book
-{
-    Description = "SciFi",
-    Name = "April",
-    ID = 2
-});
-books.Add(new Book
-{
-    Description = "Comedy",
-    Name = "Gintama",
-    ID = 3
-});
 
-app.MapPost("/Books", ([FromBody] Book book) =>
+app.MapPost("/Books", ([FromBody] Book book, BooksDbContext db) =>
 {
-    books.Add(book);
+    db.Add(book);
+    db.SaveChanges();
     return book;
 });
 
-app.MapPut("/Books", ([FromBody] Book book) => {
+app.MapPut("/Books", ([FromBody] Book book, BooksDbContext db) => {
 
-    var b = books.Where(c => c.ID == book.ID).FirstOrDefault();
+    var b = db.Books.Where(c => c.ID == book.ID).FirstOrDefault();
 
     b.Name = book.Name;
 
     b.Description = book.Description;
 
+    db.SaveChanges();
+
     return b;
 
 });
-app.MapDelete("/Books/{id}", ([FromRoute] int id) =>
+app.MapDelete("/Books/{id}", ([FromRoute] int id, BooksDbContext db) =>
 {
-
-    var b = books.Where(c => c.ID == id).FirstOrDefault();
-
-    books.Remove(b);
+    var b = db.Books.Find(id);
+    db.Books.Remove(b);
+    db.SaveChanges();
 
 });
-app.MapGet("/Books", () =>
+app.MapGet("/Books/{id}", ([FromRoute] int id, BooksDbContext db) =>
+{
+    var b = db.Books.Find(id);
+    return b;
+
+});
+app.MapGet("/Books", (BooksDbContext db) =>
 {
    
 
-    return books;
+    return db.Books.ToList();
 
 
 }).WithName("GetBooks");
@@ -98,10 +93,3 @@ internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
 
-public class Book
-{
-    public int ID { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-
-}
