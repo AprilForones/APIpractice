@@ -50,7 +50,6 @@ app.MapPost("/Books", ([FromBody] Book book, BooksDbContext db) =>
     db.SaveChanges();
     return book;
 });
-
 app.MapPut("/Books", ([FromBody] Book book, BooksDbContext db) => {
 
     var b = db.Books.Where(c => c.ID == book.ID).FirstOrDefault();
