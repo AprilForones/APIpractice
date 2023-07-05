@@ -1,4 +1,6 @@
+using APIpractice;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<BooksDbContext>(options =>
+    options.UseMySQL("Server=localhost,3306;Database=booksdb;Uid=root;Pwd=aries@041300;"));
 
 var app = builder.Build();
 
@@ -37,56 +41,37 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
-List<Book> books = new List<Book>();
-books.Add(new Book
-{
-    Description = "Fantasy",
-    Name = "Cinderella",
-    ID = 1
-});
-books.Add(new Book
-{
-    Description = "SciFi",
-    Name = "April",
-    ID = 2
-});
-books.Add(new Book
-{
-    Description = "Comedy",
-    Name = "Gintama",
-    ID = 3
-});
+
 
 app.MapPost("/Books", ([FromBody] Book book) =>
 {
-    books.Add(book);
+   // books.Add(book);
     return book;
 });
 
 app.MapPut("/Books", ([FromBody] Book book) => {
 
-    var b = books.Where(c => c.ID == book.ID).FirstOrDefault();
+   // var b = books.Where(c => c.ID == book.ID).FirstOrDefault();
 
-    b.Name = book.Name;
+   // b.Name = book.Name;
+//  b.Description = book.Description;
 
-    b.Description = book.Description;
-
-    return b;
+    //return b;
 
 });
 app.MapDelete("/Books/{id}", ([FromRoute] int id) =>
 {
 
-    var b = books.Where(c => c.ID == id).FirstOrDefault();
+   // var b = books.Where(c => c.ID == id).FirstOrDefault();
 
-    books.Remove(b);
+   // books.Remove(b);
 
 });
 app.MapGet("/Books", () =>
 {
    
 
-    return books;
+   // return books;
 
 
 }).WithName("GetBooks");
@@ -98,10 +83,3 @@ internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
 
-public class Book
-{
-    public int ID { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-
-}
