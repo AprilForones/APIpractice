@@ -12,8 +12,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BooksDbContext>(options =>
     options.UseMySQL("Server=localhost,3306;Database=booksdb;Uid=root;Pwd=aries@041300;"));
 
-builder.Services.AddDbContext<BooksDbContext>(options =>
-    options.UseMySQL("Server=localhost,3306;Database=booksdb;Uid=root;Pwd=root;"));
+
+
 
 var app = builder.Build();
 
@@ -31,20 +31,6 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateTime.Now.AddDays(index),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
 
 app.MapPost("/Books", ([FromBody] Book book, BooksDbContext db) =>
 {
@@ -58,8 +44,8 @@ app.MapPut("/Books", ([FromBody] Book book, BooksDbContext db) => {
 
     b.Name = book.Name;
 
-   // b.Name = book.Name;
-//  b.Description = book.Description;
+    b.Name = book.Name;
+    b.Description = book.Description;
 
     db.SaveChanges();
 
@@ -75,11 +61,11 @@ app.MapDelete("/Books/{id}", ([FromRoute] int id, BooksDbContext db) =>
 });
 app.MapGet("/Books/{id}", ([FromRoute] int id, BooksDbContext db) =>
 {
-    var b = db.Books.Find(id);
+    var b = db.Books.Include(c => c.Author).Where(c => c.ID == id).ToList();
     return b;
 
 });
-app.MapGet("/Books", (BooksDbContext db) =>
+app.MapGet("/Book", (BooksDbContext db) =>
 {
    
 
@@ -87,6 +73,72 @@ app.MapGet("/Books", (BooksDbContext db) =>
 
 
 }).WithName("GetBooks");
+
+app.MapPost("/Authors", ([FromBody] Author author, BooksDbContext db) =>
+{
+    db.Add(author);
+    db.SaveChanges();
+    return author;
+});
+app.MapPut("/Authors", ([FromBody] Author author, BooksDbContext db) => {
+
+    var b = db.Authors.Where(c => c.ID == author.ID).FirstOrDefault();
+
+    b.FName = author.FName;
+
+    b.LName = author.LName;
+    b.Birthdate = author.Birthdate;
+
+    db.SaveChanges();
+
+    return b;
+
+});
+app.MapDelete("/Authors/{id}", ([FromRoute] int id, BooksDbContext db) =>
+{
+    var b = db.Authors.Find(id);
+    db.Authors.Remove(b);
+    db.SaveChanges();
+
+});
+app.MapGet("/Authors/{id}", ([FromRoute] int id, BooksDbContext db) =>
+{
+    // var b = db.Authors.Find(id);
+    //var authors = db.Authors.ToList();
+   //foreach (var author in authors)
+    //{
+        //author.Book = db.Books.Where(b => b.AuthorId == author.Id).ToList();
+  //  }
+    var b = db.Books.Include(c => c.Book).Where(c => c.ID == id).ToList();
+
+    return b;
+
+});
+app.MapGet("/Author", (BooksDbContext db) =>
+{
+
+    return db.Authors.ToList();
+
+
+}).WithName("GetAuthors");
+
+
+
+
+
+app.MapGet("/weatherforecast", () =>
+{
+    var forecast = Enumerable.Range(1, 5).Select(index =>
+        new WeatherForecast
+        (
+            DateTime.Now.AddDays(index),
+            Random.Shared.Next(-20, 55),
+            summaries[Random.Shared.Next(summaries.Length)]
+        ))
+        .ToArray();
+    return forecast;
+})
+.WithName("GetWeatherForecast");
 
 app.Run();
 
