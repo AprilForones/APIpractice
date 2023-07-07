@@ -16,6 +16,7 @@ namespace APIpractice
          
         public Author Author { get; set; }
 
+       }
     }
 
-}
+

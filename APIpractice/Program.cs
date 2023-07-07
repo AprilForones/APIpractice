@@ -103,15 +103,20 @@ app.MapDelete("/Authors/{id}", ([FromRoute] int id, BooksDbContext db) =>
 });
 app.MapGet("/Authors/{id}", ([FromRoute] int id, BooksDbContext db) =>
 {
-    // var b = db.Authors.Find(id);
-    //var authors = db.Authors.ToList();
-   //foreach (var author in authors)
-    //{
-        //author.Book = db.Books.Where(b => b.AuthorId == author.Id).ToList();
-  //  }
-    var b = db.Books.Include(c => c.Book).Where(c => c.ID == id).ToList();
+   // var b = db.Authors.Include(c => c.Book).Where(c => c.ID == id).ToList(); ;
 
-    return b;
+// var b = db.Books.Include(c => c.Author).Where(c => c.ID == id).ToList();
+
+  
+        var authors = db.Authors.ToList();
+        foreach (var author in authors)
+        {
+            author.Book = db.Books.Where(b => b.AuthorId == id).ToList();
+        }
+
+        //var b = db.Books.Include(c => c.Author).Where(c => c.ID == id).ToList();
+    
+    return authors;
 
 });
 app.MapGet("/Author", (BooksDbContext db) =>

@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
+using System.Reflection.Emit;
 
 namespace APIpractice
 {
@@ -13,10 +15,11 @@ namespace APIpractice
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySQL("Server=localhost,3306;Database=booksdb;Uid=root;Pwd=aries@041300;");
+      
         }
-        
 
-       
+
+
     }
     
 }

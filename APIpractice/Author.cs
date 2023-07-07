@@ -12,8 +12,9 @@ namespace APIpractice
 
         public string Birthdate { get; set; }
 
-        [ForeignKey("Book")]
-        public int? BookId { get; set; }
-        public ICollection<Author> Book { get; set; }
+        //public int? BookId { get; set; }
+
+        public ICollection<Book> Book { get; set; }
+
     }
 }
