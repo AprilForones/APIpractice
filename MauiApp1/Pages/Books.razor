@@ -1,0 +1,61 @@
+﻿@page "/books"
+
+<h1>Books</h1>
+
+<form @onsubmit="HandSubmit">
+
+    <div>
+        <label class="booknmlbl" for="BookName">
+            Book Name:
+        </label>
+        <input type="text" style="margin-top:5px" />
+    </div>
+    <div>
+        <label class="bookdeslbl" for="BookDescription">
+            Book Description:
+        </label>
+        <input type="text" style="margin-top:5px" />
+    </div>
+    <div>
+        <button type="submit" class="btnbook" style="margin-top:5px" >
+            Submit
+        </button>
+    </div>
+</form>
+
+
+<!-- TABLE FOR BOOKS-->
+<h2 style="text-align:center; margin:10px;">Book Table</h2>
+
+@if (RetrievedBooks == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="bookstable">
+        <thead>
+            <tr>
+                <th>Book ID</th>
+                <th>Book Name</th>
+                <th>Description</th>
+                <th>Author</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Book b in RetrievedBooks)
+            {
+                <tr>
+                    <td>@b.ID</td>
+                    <td>@b.Name</td>
+                    <td>@b.Description</td>
+                    <td>@b.AuthorId</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+
+
