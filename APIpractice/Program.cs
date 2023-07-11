@@ -61,7 +61,26 @@ app.MapDelete("/Books/{id}", ([FromRoute] int id, BooksDbContext db) =>
 });
 app.MapGet("/Books/{id}", ([FromRoute] int id, BooksDbContext db) =>
 {
-    var b = db.Books.Include(c => c.Author).Where(c => c.ID == id).ToList();
+    var b = db.Books.Include(c => c.Author)
+
+.Select(c => new
+{
+
+
+    ID = c.ID,
+
+
+    Name = c.Name,
+
+
+    Description = c.Description,
+
+
+    Author = new { c.Author.ID, c.Author.FName, c.Author.LName }
+
+
+}).Where(c => c.ID == id).FirstOrDefault();
+
     return b;
 
 });
@@ -103,26 +122,54 @@ app.MapDelete("/Authors/{id}", ([FromRoute] int id, BooksDbContext db) =>
 });
 app.MapGet("/Authors/{id}", ([FromRoute] int id, BooksDbContext db) =>
 {
-   // var b = db.Authors.Include(c => c.Book).Where(c => c.ID == id).ToList(); ;
+    // var b = db.Authors.Include(c => c.Book).Where(c => c.ID == id).ToList(); ;
 
-// var b = db.Books.Include(c => c.Author).Where(c => c.ID == id).ToList();
+    // var b = db.Books.Include(c => c.Author).Where(c => c.ID == id).ToList();
 
-  
-        var authors = db.Authors.ToList();
-        foreach (var author in authors)
-        {
-            author.Book = db.Books.Where(b => b.AuthorId == id).ToList();
-        }
 
-        //var b = db.Books.Include(c => c.Author).Where(c => c.ID == id).ToList();
+    //var authors = db.Authors.ToList();
+    // foreach (var author in authors)
+    // {
+    //     author.Books = db.Books.Where(b => b.AuthorId == id).ToList();
+    // }
+
+    //var b = db.Books.Include(c => c.Author).Where(c => c.ID == id).ToList();
+    return db.Authors.Include(c => c.Books).Where(c => c.ID == id)
+
+        .Select(c => new {
+
+                        c.ID,
+                        c.FName,
+                        c.LName,
+                        c.Birthdate,
+          Books = c.Books.Select(b => new { b.ID, b.Name, b.Description }).ToList() }).FirstOrDefault();
+
+
+
     
-    return authors;
 
 });
+
 app.MapGet("/Author", (BooksDbContext db) =>
 {
 
-    return db.Authors.ToList();
+    return db.Authors.Include(c => c.Books)
+
+.Select(c => new {
+
+    c.ID,
+
+    c.FName,
+
+    c.LName,
+
+    c.Birthdate,
+
+    Books = c.Books.Select(b => new { BookID = b.ID, b.Name, b.Description }).ToList()
+
+})
+
+    .ToList();
 
 
 }).WithName("GetAuthors");

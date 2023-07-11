@@ -1,0 +1,69 @@
+﻿@page "/authors"
+
+
+
+<h1>Authors</h1>
+
+<div>
+    <label class="authorfnm" for="AuthorFName">
+        Author's First Name:
+    </label>
+    <input type="text" style="margin-top:5px" />
+</div>
+<div>
+    <label class="authorlnm" for="AuthorLName">
+        Author's Last Name:
+    </label>
+    <input type="text" style="margin-top:5px" />
+</div>
+<div>
+    <label class="authorbdy" for="AuthorBirthdate">
+        Author's Birth Date:
+    </label>
+    <input type="text" style="margin-top:5px" />
+</div>
+<div>
+    <button class="btnauth" style="margin-top:5px">
+        Submit
+    </button>
+</div>
+
+<!-- TABLE FOR AUTHORS-->
+<h2 style="text-align:center; margin:10px;">AUTHORS TABLE</h2>
+
+@if (AuthorsList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="bookstable">
+        <thead>
+            <tr>
+                <th>Author ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Birth Date</th>
+                <th>Book Count</th>
+                <th>Book Names</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Author b in AuthorsList)
+            {
+                <tr>
+                    <td>@b.ID</td>
+                    <td>@b.FName</td>
+                    <td>@b.LName</td>
+                    <td>@b.Birthdate</td>
+                    <td>@b.Books.Count()</td>
+                    <td> @foreach( Book  book in b.Books)
+                        {
+                            <p> @book.Name </p>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
