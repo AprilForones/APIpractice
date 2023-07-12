@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
-using System.Text.Json.Serialization;
-
 
 namespace MauiApp1.Pages
 {
@@ -14,34 +11,35 @@ namespace MauiApp1.Pages
         private string bookName;
         private string AuthorId;
         private string bookDescription;
+
         protected override async Task OnInitializedAsync()
+        {
+            RetrievedBooks = await GetBooksAsync();
+        }
+
+        private async Task<List<Book>> GetBooksAsync()
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7112/Book");
             request.Headers.Add("accept", "application/json");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadFromJsonAsync<List<Book>>();
-
-            RetrievedBooks = result;
-
-
-
+            return await response.Content.ReadFromJsonAsync<List<Book>>();
         }
+
         private StringContent CreateJsonContent(object data)
         {
-
             var json = JsonConvert.SerializeObject(data);
 
             return new StringContent(json, Encoding.UTF8, "application/json");
-
         }
+
         private async Task HandSubmit()
         {
             var book = new Book();
             book.Name = bookName;
             book.Description = bookDescription;
-            book.AuthorId =int.Parse(AuthorId);
+            book.AuthorId = int.Parse(AuthorId);
             HttpClient client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7112/Books");
             request.Headers.Add("accept", "application/json");
@@ -54,6 +52,8 @@ namespace MauiApp1.Pages
             {
                 // The book was added successfully.
                 Console.WriteLine("Book added successfully");
+                RetrievedBooks = await GetBooksAsync();
+                StateHasChanged();
             }
             else
             {
