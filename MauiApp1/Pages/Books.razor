@@ -8,14 +8,20 @@
     <label class="booknmlbl" for="BookName">
         Book Name:
     </label>
-    <input type="text" style="margin-top:5px" />
+        <input id="BookName" name="BookName" @bind="@bookName" type="text" style="margin-top:5px" />
 </div>
 <div>
     <label class="bookdeslbl" for="BookDescription">
         Book Description:
     </label>
-    <input type="text" style="margin-top:5px" />
+        <input id="BookDescription" name="BookDescription" @bind="@bookDescription" type="text" style="margin-top:5px" />
 </div>
+    <div>
+        <label class="authorid" for="Authorid">
+            Author ID:
+        </label>
+        <input id="Authorid" name="Authorid" @bind="@AuthorId" type="text" style="margin-top:5px" />
+    </div>
 <div>
         <button type="submit" class="btnbook" style="margin-top:5px" >
         Submit
