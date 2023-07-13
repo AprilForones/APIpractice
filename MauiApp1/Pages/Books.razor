@@ -27,6 +27,7 @@
         Submit
     </button>
 </div>
+  
 </form>
 
 
@@ -56,7 +57,9 @@ else
                     <td>@b.Name</td>
                     <td>@b.Description</td>
                     <td>@b.AuthorId</td>
+                    
                 </tr>
+                <button id="delbtn" name="DeleteBook" onclick="@(() => HandleDeleteBook(@b.ID))" class="btndel" style="margin-top:5px"> Delete</button>
             }
         </tbody>
     </table>
