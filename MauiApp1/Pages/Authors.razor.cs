@@ -29,7 +29,7 @@ namespace MauiApp1.Pages
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadFromJsonAsync<List<Author>>();
 
-            AuthorsList = result;
+            return result;
 
         }
         private StringContent CreateJsonContent(object data)
@@ -45,7 +45,7 @@ namespace MauiApp1.Pages
             author.FName = authorFName;
             author.LName = authorFName;
             author.Birthdate = authorBirth;
-           // author.AuthorId = int.Parse(AuthorId);
+
             HttpClient client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7112/Author");
             request.Headers.Add("accept", "application/json");
