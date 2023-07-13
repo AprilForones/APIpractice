@@ -4,29 +4,32 @@
 
 <h1>Authors</h1>
 
-<div>
-    <label class="authorfnm" for="AuthorFName">
-        Author's First Name:
-    </label>
-    <input type="text" style="margin-top:5px" />
-</div>
-<div>
-    <label class="authorlnm" for="AuthorLName">
-        Author's Last Name:
-    </label>
-    <input type="text" style="margin-top:5px" />
-</div>
-<div>
-    <label class="authorbdy" for="AuthorBirthdate">
-        Author's Birth Date:
-    </label>
-    <input type="text" style="margin-top:5px" />
-</div>
-<div>
-    <button class="btnauth" style="margin-top:5px">
-        Submit
-    </button>
-</div>
+<form @onsubmit="HandleSubmit">
+    <div>
+        <label class="authorfnm" for="AuthorFName">
+            Author's First Name:
+        </label>
+        <input id="AuthorFname" name="AuthorFName" @bind="@authorFName" type="text" style="margin-top:5px" />
+    </div>
+    <div>
+        <label class="authorlnm" for="AuthorLName">
+            Author's Last Name:
+        </label>
+        <input id="AuthorLname" name="AuthorLName" @bind="@authorLName" type="text" style="margin-top:5px" />
+    </div>
+    <div>
+        <label class="authorbdy" for="AuthorBirthdate">
+            Author's Birth Date:
+        </label>
+        <input id="AuthorBirthdate" name="AuthorBirthdate" @bind="@authorBirth" type="text" style="margin-top:5px" />
+    </div>
+    <div>
+        <button type="submit" class="btnauth" style="margin-top:5px">
+            Submit
+        </button>
+    </div>
+
+</form>
 
 <!-- TABLE FOR AUTHORS-->
 <h2 style="text-align:center; margin:10px;">AUTHORS TABLE</h2>

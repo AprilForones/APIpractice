@@ -62,5 +62,15 @@ namespace MauiApp1.Pages
             }
             //Console.WriteLine("Book added successfully");
         }
+        private async void HandleDeleteBook(int bookId)
+        {
+            HttpClient client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"https://localhost:7112/Books/{bookId}");
+            request.Headers.Add("accept", "application/json");
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            RetrievedBooks = await GetBooksAsync();
+            StateHasChanged();
+        }
     }
 }
