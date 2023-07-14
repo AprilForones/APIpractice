@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿
+using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Json;
@@ -13,9 +14,20 @@ namespace MauiApp1.Pages
         private string authorLName;
         private string authorBirth;
         private string AuthorId;
+        private bool IsAdd = true;
+        private string buttonText = "SUBMIT";
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                AuthorsList = await GetAuthorsAsync();
+                StateHasChanged();
+            }
+        }
         protected override async Task OnInitializedAsync()
         {
-            AuthorsList = await GetAuthorsAsync();
+
 
 
         }
@@ -29,7 +41,7 @@ namespace MauiApp1.Pages
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadFromJsonAsync<List<Author>>();
 
-            AuthorsList = result;
+            return result;
 
         }
         private StringContent CreateJsonContent(object data)
@@ -41,32 +53,82 @@ namespace MauiApp1.Pages
 
         private async Task HandleSubmit()
         {
-            var author = new Author();
-            author.FName = authorFName;
-            author.LName = authorFName;
-            author.Birthdate = authorBirth;
-            author.AuthorId = int.Parse(AuthorId);
-            HttpClient client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7112/Author");
-            request.Headers.Add("accept", "application/json");
-            request.Content = CreateJsonContent(author);
-            var response = await client.SendAsync(request);
-
-            response.EnsureSuccessStatusCode();
-            // Check the response status code.
-            if (response.StatusCode == HttpStatusCode.OK)
+            if (IsAdd)
             {
-                // The book was added successfully.
-                Console.WriteLine("Book added successfully");
-              AuthorsList = await GetAuthorsAsync();
-                StateHasChanged();
+
+                var author = new Author();
+                author.FName = authorFName;
+                author.LName = authorLName;
+                author.Birthdate = authorBirth;
+               // author.AuthorId = int.Parse(AuthorId);
+                HttpClient client = new HttpClient();
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7112/Authors");
+                request.Headers.Add("accept", "application/json");
+                request.Content = CreateJsonContent(author);
+                var response = await client.SendAsync(request);
+
+                response.EnsureSuccessStatusCode();
+                // Check the response status code.
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    // The book was added successfully.
+                    Console.WriteLine("Author added successfully");
+                    //AuthorsList = await GetAuthorsAsync();
+                    //StateHasChanged();
+                }
+                else
+                {
+                    // The book was not added successfully.
+                    Console.WriteLine("Error adding Author");
+                }
             }
+
             else
             {
-                // The book was not added successfully.
-                Console.WriteLine("Error adding book");
+                var author = new Author();
+                //author.ID = authorId;
+                author.FName = authorFName;
+                author.LName = authorLName;
+                author.Birthdate = authorBirth;
+
+                HttpClient client = new HttpClient();
+                var request = new HttpRequestMessage(HttpMethod.Put, $"https://localhost:7112/Authors");
+                request.Headers.Add("accept", "application/json");
+                request.Content = CreateJsonContent(author);
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
             }
-            //Console.WriteLine("Book added successfully");
+            IsAdd = true;
+            buttonText = "SUBMIT";
+            AuthorsList = await GetAuthorsAsync();
+            StateHasChanged();
+
+
+
         }
-    }
+        //Console.WriteLine("Book added successfully");
+
+        private async void HandleDeleteAuthor(int authorId)
+        {
+            HttpClient client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"https://localhost:7112/Authors/{authorId}");
+            request.Headers.Add("accept", "application/json");
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            AuthorsList = await GetAuthorsAsync();
+            StateHasChanged();
+        }
+        private async void HandleEditAuthor(Author b)
+        {
+            authorFName = b.FName;
+            authorLName = b.LName;
+            authorBirth = b.Birthdate;
+            //AuthorId = b.AuthorId.HasValue ? b.AuthorId.Value.ToString() : "";
+            IsAdd = false;
+            buttonText = "UPDATE";
+
+            StateHasChanged();
+        }
+    } 
 }

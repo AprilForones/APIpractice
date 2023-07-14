@@ -11,10 +11,21 @@ namespace MauiApp1.Pages
         private string bookName;
         private string AuthorId;
         private string bookDescription;
+        private int bookId;
+        private bool IsAdd = true;
+        private string buttonText = "SUBMIT";
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                RetrievedBooks = await GetBooksAsync();
+                StateHasChanged();
+            }
+        }
         protected override async Task OnInitializedAsync()
         {
-            RetrievedBooks = await GetBooksAsync();
+            
         }
 
         private async Task<List<Book>> GetBooksAsync()
@@ -36,30 +47,52 @@ namespace MauiApp1.Pages
 
         private async Task HandSubmit()
         {
-            var book = new Book();
-            book.Name = bookName;
-            book.Description = bookDescription;
-            book.AuthorId = int.Parse(AuthorId);
-            HttpClient client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7112/Books");
-            request.Headers.Add("accept", "application/json");
-            request.Content = CreateJsonContent(book);
-            var response = await client.SendAsync(request);
 
-            response.EnsureSuccessStatusCode();
-            // Check the response status code.
-            if (response.StatusCode == HttpStatusCode.OK)
+            if (IsAdd)
             {
-                // The book was added successfully.
-                Console.WriteLine("Book added successfully");
-                RetrievedBooks = await GetBooksAsync();
-                StateHasChanged();
+                var book = new Book();
+                book.Name = bookName;
+                book.Description = bookDescription;
+                book.AuthorId = int.Parse(AuthorId);
+                HttpClient client = new HttpClient();
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7112/Books");
+                request.Headers.Add("accept", "application/json");
+                request.Content = CreateJsonContent(book);
+                var response = await client.SendAsync(request);
+
+                response.EnsureSuccessStatusCode();
+                // Check the response status code.
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    // The book was added successfully.
+                    Console.WriteLine("Book added successfully");
+
+                
+                }
+                else
+                {
+                    // The book was not added successfully.
+                    Console.WriteLine("Error adding book");
+                }
             }
             else
             {
-                // The book was not added successfully.
-                Console.WriteLine("Error adding book");
+                var book = new Book();
+                book.ID = bookId;
+                book.Name = bookName;
+                book.Description = bookDescription;
+                HttpClient client = new HttpClient();
+                var request = new HttpRequestMessage(HttpMethod.Put, $"https://localhost:7112/Books");
+                request.Headers.Add("accept", "application/json");
+                request.Content = CreateJsonContent(book);
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+         
             }
+            IsAdd = true;
+            buttonText = "SUBMIT";
+            RetrievedBooks = await GetBooksAsync();
+            StateHasChanged();
             //Console.WriteLine("Book added successfully");
         }
         private async void HandleDeleteBook(int bookId)
@@ -70,6 +103,17 @@ namespace MauiApp1.Pages
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             RetrievedBooks = await GetBooksAsync();
+            StateHasChanged();
+        }
+        private async void HandleEditBook(Book b)
+        {
+            bookDescription = b.Description;
+            bookName = b.Name;
+            bookId = b.ID;
+            AuthorId = b.AuthorId.HasValue ? b.AuthorId.Value.ToString() : "";
+            IsAdd = false;
+            buttonText = "UPDATE";
+
             StateHasChanged();
         }
     }

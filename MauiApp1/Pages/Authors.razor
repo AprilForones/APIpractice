@@ -25,7 +25,7 @@
     </div>
     <div>
         <button type="submit" class="btnauth" style="margin-top:5px">
-            Submit
+            @buttonText
         </button>
     </div>
 
@@ -54,7 +54,7 @@ else
         <tbody>
             @foreach (Author b in AuthorsList)
             {
-                <tr>
+                <tr style="margin:15px;">
                     <td>@b.ID</td>
                     <td>@b.FName</td>
                     <td>@b.LName</td>
@@ -66,6 +66,8 @@ else
                         }
                     </td>
                 </tr>
+                <button id="delbtn" name="DeleteBook" onclick="@(() => HandleDeleteAuthor(@b.ID))" class="btndel" style="margin-top:5px"> Delete</button>
+                <button id="editbtn" name="editBook" onclick="@(() => HandleEditAuthor(@b))" class="btnedit" style="margin-top:5px"> Update</button>
             }
         </tbody>
     </table>
