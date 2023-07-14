@@ -1,6 +1,8 @@
 using APIpractice;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.Requests;
+using Shared.Responses;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,24 +34,71 @@ var summaries = new[]
 };
 
 
-app.MapPost("/Books", ([FromBody] Book book, BooksDbContext db) =>
+app.MapPost("/Books", ([FromBody] AddBookRequest addBook, BooksDbContext db) =>
 {
-    db.Add(book);
-    db.SaveChanges();
-    return book;
+    if (!addBook.AuthorId.HasValue)
+    {
+        return Results.BadRequest("author must be supplied");
+    }
+
+    var authorInDb = db.Authors.Find(addBook.AuthorId);
+    if (authorInDb == null)
+    {
+        return Results.NotFound("Author Not Found");
+    }
+
+    var bookToSave = new Book
+    {
+        Name = addBook.Name,
+        Description = addBook.Description,
+        AuthorId = addBook.AuthorId
+    };
+
+    try
+    {
+        db.Books.Add(bookToSave);
+        db.SaveChanges();
+    }
+    catch (Exception)
+    {
+
+        return Results.StatusCode(500);
+    }
+
+
+    var response = new GetBookResponse
+    {
+        ID = bookToSave.ID,
+        Description = bookToSave.Description,
+        Name = bookToSave.Name,
+        Author = new GetAuthor
+        {
+            ID = bookToSave.AuthorId.Value,
+            FName = bookToSave.Author.FName,
+            LName = bookToSave.Author.LName
+        }
+    };
+
+    return Results.Ok(response);
 });
-app.MapPut("/Books", ([FromBody] Book book, BooksDbContext db) => {
 
-    var b = db.Books.Where(c => c.ID == book.ID).FirstOrDefault();
+app.MapPut("/Books", ([FromBody] EditBookRequest editBook, BooksDbContext db) => {
 
-    b.Name = book.Name;
+    var b = db.Books.Where(c => c.ID == editBook.Id).FirstOrDefault();
 
-    b.Name = book.Name;
-    b.Description = book.Description;
+    if(b == null)
+    {
+        return Results.NotFound();
+    }
+
+    b.Name = editBook.Name;
+
+    b.Description = editBook.Description;
 
     db.SaveChanges();
 
-    return b;
+
+    return Results.Ok(b);
 
 });
 app.MapDelete("/Books/{id}", ([FromRoute] int id, BooksDbContext db) =>
@@ -63,26 +112,19 @@ app.MapGet("/Books/{id}", ([FromRoute] int id, BooksDbContext db) =>
 {
     var b = db.Books.Include(c => c.Author)
 
-.Select(c => new
+.Select(c => new GetBookResponse
 {
-
-
     ID = c.ID,
-
-
     Name = c.Name,
-
-
     Description = c.Description,
-
-
-    Author = new { c.Author.ID, c.Author.FName, c.Author.LName }
-
-
+    Author = new GetAuthor { 
+        ID =  c.Author.ID, 
+        FName =  c.Author.FName, 
+        LName =  c.Author.LName 
+    }
 }).Where(c => c.ID == id).FirstOrDefault();
 
     return b;
-
 });
 app.MapGet("/Book", (BooksDbContext db) =>
 {
@@ -117,6 +159,7 @@ app.MapDelete("/Authors/{id}", ([FromRoute] int id, BooksDbContext db) =>
 {
     var b = db.Authors.Find(id);
     db.Authors.Remove(b);
+
     db.SaveChanges();
 
 });
@@ -143,12 +186,6 @@ app.MapGet("/Authors/{id}", ([FromRoute] int id, BooksDbContext db) =>
                         c.LName,
                         c.Birthdate,
           Books = c.Books.Select(b => new { b.ID, b.Name, b.Description }).ToList() }).FirstOrDefault();
-
-
-
-    
-
-});
 
 app.MapGet("/Author", (BooksDbContext db) =>
 {

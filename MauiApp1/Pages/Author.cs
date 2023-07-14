@@ -16,6 +16,6 @@ namespace MauiApp1.Pages
         //public int? BookId { get; set; }
 
         public ICollection<Book> Books { get; set; }
-
+        public int AuthorId { get; internal set; }
     }
 }

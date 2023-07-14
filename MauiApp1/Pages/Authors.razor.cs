@@ -60,7 +60,7 @@ namespace MauiApp1.Pages
                 author.FName = authorFName;
                 author.LName = authorLName;
                 author.Birthdate = authorBirth;
-               // author.AuthorId = int.Parse(AuthorId);
+                author.ID = int.Parse(AuthorId);
                 HttpClient client = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7112/Authors");
                 request.Headers.Add("accept", "application/json");
@@ -86,7 +86,7 @@ namespace MauiApp1.Pages
             else
             {
                 var author = new Author();
-                //author.ID = authorId;
+                author.ID = int.Parse(AuthorId);
                 author.FName = authorFName;
                 author.LName = authorLName;
                 author.Birthdate = authorBirth;
@@ -124,7 +124,7 @@ namespace MauiApp1.Pages
             authorFName = b.FName;
             authorLName = b.LName;
             authorBirth = b.Birthdate;
-            //AuthorId = b.AuthorId.HasValue ? b.AuthorId.Value.ToString() : "";
+            AuthorId = b.ID.ToString();
             IsAdd = false;
             buttonText = "UPDATE";
 

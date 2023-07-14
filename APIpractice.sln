@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIpractice", "APIpractice\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiApp1", "MauiApp1\MauiApp1.csproj", "{7085016B-ACD2-450A-8F89-23647E8F8326}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{02CC1DA4-47E6-47B1-9ED8-763A5A138D54}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{7085016B-ACD2-450A-8F89-23647E8F8326}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7085016B-ACD2-450A-8F89-23647E8F8326}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7085016B-ACD2-450A-8F89-23647E8F8326}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{02CC1DA4-47E6-47B1-9ED8-763A5A138D54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02CC1DA4-47E6-47B1-9ED8-763A5A138D54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02CC1DA4-47E6-47B1-9ED8-763A5A138D54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02CC1DA4-47E6-47B1-9ED8-763A5A138D54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
