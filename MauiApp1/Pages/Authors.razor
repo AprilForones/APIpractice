@@ -6,6 +6,12 @@
 
 <form @onsubmit="HandleSubmit">
     <div>
+        <label class="authorid" for="AuthorID">
+            Author ID:
+        </label>
+        <input id="AuthorID" name="AuthorID" @bind="@AuthorId" type="text" style="margin-top:5px" />
+    </div>
+    <div>
         <label class="authorfnm" for="AuthorFName">
             Author's First Name:
         </label>
