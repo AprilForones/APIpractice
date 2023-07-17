@@ -1,5 +1,6 @@
 ﻿using MauiApp1.Data;
 using Microsoft.Extensions.Logging;
+using CommunityToolkit.Maui;
 
 namespace MauiApp1
 {
@@ -8,22 +9,16 @@ namespace MauiApp1
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
-            builder
-                .UseMauiApp<App>()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                });
-
+            builder.UseMauiApp<App>().ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+            }).UseMauiCommunityToolkit();
             builder.Services.AddMauiBlazorWebView();
-
 #if DEBUG
-		builder.Services.AddBlazorWebViewDeveloperTools();
-		builder.Logging.AddDebug();
+            builder.Services.AddBlazorWebViewDeveloperTools();
+            builder.Logging.AddDebug();
 #endif
-
             builder.Services.AddSingleton<WeatherForecastService>();
-
             return builder.Build();
         }
     }

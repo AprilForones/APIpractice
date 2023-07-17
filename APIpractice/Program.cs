@@ -2,6 +2,8 @@ using APIpractice;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Shared.Requests;
+using Shared.Responses;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -154,6 +156,7 @@ app.MapPut("/Authors", ([FromBody] Author author, BooksDbContext db) => {
     return b;
 
 });
+
 app.MapDelete("/Authors/{id}", ([FromRoute] int id, BooksDbContext db) =>
 {
     var b = db.Authors.Find(id);
@@ -162,6 +165,7 @@ app.MapDelete("/Authors/{id}", ([FromRoute] int id, BooksDbContext db) =>
     db.SaveChanges();
 
 });
+
 app.MapGet("/Authors/{id}", ([FromRoute] int id, BooksDbContext db) =>
 {
     // var b = db.Authors.Include(c => c.Book).Where(c => c.ID == id).ToList(); ;
@@ -178,13 +182,16 @@ app.MapGet("/Authors/{id}", ([FromRoute] int id, BooksDbContext db) =>
     //var b = db.Books.Include(c => c.Author).Where(c => c.ID == id).ToList();
     return db.Authors.Include(c => c.Books).Where(c => c.ID == id)
 
-        .Select(c => new {
+        .Select(c => new
+        {
 
-                        c.ID,
-                        c.FName,
-                        c.LName,
-                        c.Birthdate,
-          Books = c.Books.Select(b => new { b.ID, b.Name, b.Description }).ToList() }).FirstOrDefault();
+            c.ID,
+            c.FName,
+            c.LName,
+            c.Birthdate,
+            Books = c.Books.Select(b => new { b.ID, b.Name, b.Description }).ToList()
+        }).FirstOrDefault();
+});
 
 app.MapGet("/Author", (BooksDbContext db) =>
 {

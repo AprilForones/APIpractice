@@ -1,5 +1,7 @@
 ﻿
 
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using System.Net.Http.Json;
 
 namespace MauiApp1.Pages
@@ -33,6 +35,10 @@ namespace MauiApp1.Pages
             StateHasChanged();
         }
 
+       
+
+
+
         protected override async Task OnInitializedAsync()
         {
             var client = new HttpClient();
@@ -46,6 +52,38 @@ namespace MauiApp1.Pages
 
            
         }
+
+        private void HandleSubmit()
+        {
+            bool isConnected = Connectivity.NetworkAccess == NetworkAccess.Internet;
+            if (isConnected)
+            {
+                ShowToast("Connected");
+            }
+            else
+            {
+                ShowToast("Not Connected");
+            }
+        }
+        public async void ShowToast(string message)
+        {
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+
+            ToastDuration duration = ToastDuration.Short;
+
+            double fontSize = 28;
+
+
+            var toast = Toast.Make(message, duration, fontSize);
+
+
+            await toast.Show(cancellationTokenSource.Token);
+
+        }
+
     }
-    
 }
+    
+
