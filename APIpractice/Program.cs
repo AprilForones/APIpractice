@@ -2,8 +2,6 @@ using APIpractice;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Shared.Requests;
-using Shared.Responses;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
