@@ -41,14 +41,14 @@ namespace MauiApp1.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7112/Book");
-            request.Headers.Add("accept", "application/json");
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadFromJsonAsync<List<Book>>();
+            //var client = new HttpClient();
+            //var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7112/Book");
+            //request.Headers.Add("accept", "application/json");
+            //var response = await client.SendAsync(request);
+            //response.EnsureSuccessStatusCode();
+            //var result = await response.Content.ReadFromJsonAsync<List<Book>>();
 
-            RetrievedBooks = result;
+            //RetrievedBooks = result;
 
            
         }
@@ -71,7 +71,7 @@ namespace MauiApp1.Pages
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
 
-            ToastDuration duration = ToastDuration.Short;
+            ToastDuration duration = ToastDuration.Long;
 
             double fontSize = 28;
 
