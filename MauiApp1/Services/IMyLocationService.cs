@@ -10,5 +10,6 @@ namespace MauiApp1.Services
     internal interface IMyLocationService
     {
         Task<MyLocation> AddMyLocation(double latitude, double longitude);
+        Task<List<MyLocation>> GetMyLocations();
     }
 }

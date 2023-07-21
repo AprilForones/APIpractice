@@ -2,6 +2,7 @@
 
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using MauiApp1.LocalDB;
 using MauiApp1.Services;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
@@ -16,6 +17,7 @@ namespace MauiApp1.Pages
         public List<Book> RetrievedBooks { get; set; } = new List<Book>();
         private string networkstatus;
         private string location;
+        private List<MyLocation> Locations { get; set; } = new List<MyLocation>();
         public Index()
         {
             Connectivity.ConnectivityChanged += OnConnectivityChanged;
@@ -58,6 +60,7 @@ namespace MauiApp1.Pages
         
             var getLocation = await GetLocationAsync();
             location = $"Latitude: {getLocation.Latitude}, Longitude: {getLocation.Longitude}, Altitude: {getLocation.Altitude}";
+            Locations = await MyLocationService.GetMyLocations();
             StateHasChanged();
         }
         public async Task<Location> GetLocationAsync()

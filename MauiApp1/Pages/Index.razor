@@ -9,6 +9,13 @@
 
 
 @{
+    foreach(var l in Locations)
+    {
+        <p>Id: @l.Id</p>
+        <p>Id: @l.Latitude</p>
+        <p>Id: @l.Longitude</p>
+    }
+
     foreach (Book b in RetrievedBooks)
 
     {

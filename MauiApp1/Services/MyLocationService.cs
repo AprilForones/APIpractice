@@ -1,4 +1,5 @@
 ﻿using MauiApp1.LocalDB;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,11 @@ namespace MauiApp1.Services
             _mobileDB.MyLocations.Add(loc);
             await _mobileDB.SaveChangesAsync();
             return loc;
+        }
+
+        public async Task<List<MyLocation>> GetMyLocations()
+        {
+            return await _mobileDB.MyLocations.ToListAsync();
         }
     }
 }
