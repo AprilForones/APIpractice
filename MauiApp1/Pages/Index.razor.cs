@@ -11,6 +11,7 @@ namespace MauiApp1.Pages
     {
         public List<Book> RetrievedBooks { get; set; } = new List<Book>();
         private string networkstatus;
+        private string location;
         public Index()
         {
             Connectivity.ConnectivityChanged += OnConnectivityChanged;
@@ -50,8 +51,21 @@ namespace MauiApp1.Pages
 
             //RetrievedBooks = result;
 
-           
+        
+            var getLocation = await GetLocationAsync();
+            location = $"Latitude: {getLocation.Latitude}, Longitude: {getLocation.Longitude}, Altitude: {getLocation.Altitude}";
+            StateHasChanged();
         }
+        public async Task<Location> GetLocationAsync()
+        {
+
+            var location = await Geolocation.GetLocationAsync(new GeolocationRequest { DesiredAccuracy = GeolocationAccuracy.Best });
+
+            return location;
+
+        }
+
+
 
         private void HandleSubmit()
         {

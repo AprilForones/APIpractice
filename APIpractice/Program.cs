@@ -104,9 +104,14 @@ app.MapPut("/Books", ([FromBody] EditBookRequest editBook, BooksDbContext db) =>
 });
 app.MapDelete("/Books/{id}", ([FromRoute] int id, BooksDbContext db) =>
 {
-    var b = db.Books.Find(id);
-    db.Books.Remove(b);
-    db.SaveChanges();
+    var b = db.Books.FirstOrDefault(c => c.ID == id);
+    if(b == null)
+    {
+        db.Books.Remove(b);
+        db.SaveChanges();
+    }
+    
+   
 
 });
 app.MapGet("/Books/{id}", ([FromRoute] int id, BooksDbContext db) =>
@@ -145,23 +150,36 @@ app.MapPost("/Authors", ([FromBody] Author author, BooksDbContext db) =>
 app.MapPut("/Authors", ([FromBody] Author author, BooksDbContext db) => {
 
     var b = db.Authors.Where(c => c.ID == author.ID).FirstOrDefault();
+if(b != null)
 
-    b.FName = author.FName;
+{
 
-    b.LName = author.LName;
-    b.Birthdate = author.Birthdate;
+        if (b != null)
 
-    db.SaveChanges();
+        {
 
-    return b;
+            b.FName = author.FName;
 
+
+            b.LName = author.LName;
+
+            b.Birthdate = author.Birthdate;
+
+
+            db.SaveChanges();
+
+        }
+    }
 });
 
 app.MapDelete("/Authors/{id}", ([FromRoute] int id, BooksDbContext db) =>
 {
-    var b = db.Authors.Find(id);
-    db.Authors.Remove(b);
-
+    var b = db.Authors.FirstOrDefault(c => c.ID == id);
+    if (b != null)
+    {
+        db.Authors.Remove(b);
+    }
+   
     db.SaveChanges();
 
 });

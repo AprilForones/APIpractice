@@ -23,10 +23,7 @@ namespace MauiApp1.Pages
                 StateHasChanged();
             }
         }
-        protected override async Task OnInitializedAsync()
-        {
-            
-        }
+  
 
         private async Task<List<Book>> GetBooksAsync()
         {
@@ -105,7 +102,7 @@ namespace MauiApp1.Pages
             RetrievedBooks = await GetBooksAsync();
             StateHasChanged();
         }
-        private async void HandleEditBook(Book b)
+        private  void HandleEditBook(Book b)
         {
             bookDescription = b.Description;
             bookName = b.Name;

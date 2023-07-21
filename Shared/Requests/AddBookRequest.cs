@@ -11,9 +11,9 @@ namespace Shared.Requests
     public class AddBookRequest
     {
         [MinLength(5)]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         public int? AuthorId { get; set; }
 

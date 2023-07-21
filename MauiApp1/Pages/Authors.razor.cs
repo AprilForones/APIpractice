@@ -25,12 +25,7 @@ namespace MauiApp1.Pages
                 StateHasChanged();
             }
         }
-        protected override async Task OnInitializedAsync()
-        {
-
-
-
-        }
+       
 
         private async Task<List<Author>> GetAuthorsAsync()
         {
@@ -119,7 +114,7 @@ namespace MauiApp1.Pages
             AuthorsList = await GetAuthorsAsync();
             StateHasChanged();
         }
-        private async void HandleEditAuthor(Author b)
+        private  void HandleEditAuthor(Author b)
         {
             authorFName = b.FName;
             authorLName = b.LName;
