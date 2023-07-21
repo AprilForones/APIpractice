@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 using Microsoft.EntityFrameworkCore;
 using MauiApp1.LocalDB;
+using MauiApp1.Services;
 
 namespace MauiApp1
 {
@@ -21,13 +22,17 @@ namespace MauiApp1
             builder.Logging.AddDebug();
 #endif
             builder.Services.AddSingleton<WeatherForecastService>();
-            return builder.Build();
+            builder.Services.AddSingleton<IMyLocationService, MyLocationService>();
 
             var path = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "myapp.db"); var connectionString = $"Data Source={path}";
 
 
             builder.Services.AddDbContext<MobileDB>(options =>
                 options.UseSqlite(connectionString));
+
+            return builder.Build();
+
+
         }
     }
 }

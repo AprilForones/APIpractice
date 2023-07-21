@@ -2,6 +2,8 @@
 
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using MauiApp1.Services;
+using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
 
 namespace MauiApp1.Pages
@@ -9,6 +11,8 @@ namespace MauiApp1.Pages
     public partial class Index
 
     {
+        [Inject]
+        private IMyLocationService MyLocationService { get; set; }
         public List<Book> RetrievedBooks { get; set; } = new List<Book>();
         private string networkstatus;
         private string location;
@@ -60,7 +64,7 @@ namespace MauiApp1.Pages
         {
 
             var location = await Geolocation.GetLocationAsync(new GeolocationRequest { DesiredAccuracy = GeolocationAccuracy.Best });
-
+            await MyLocationService.AddMyLocation(location.Latitude, location.Longitude);
             return location;
 
         }
